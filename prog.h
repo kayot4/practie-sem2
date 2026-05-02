@@ -14,6 +14,9 @@ public:
 
 	bool isSame(Plane pl) {};//совп
 	bool isParallel(Plane pl) {}; // паралелл
+	bool only2Parallel( Plane pl1, Plane pl2) {};
+	bool isPerpendicular(Plane pl1) {};
+	bool BissPlanesPerpParal(Plane pl1, Plane pl2) {};
 
 	double Distance(const Point& p) {};
 	int RangRash(const Plane& pl1, const Plane& pl2) {};
@@ -25,6 +28,11 @@ public:
 	Point searchPoint2Planes(const Plane& pl1) {};
 	std::vector<Line> Points2ParallPlane(Plane pl1,Plane pl2) {};
 	Line FindLine2same(Plane pl1, Plane pl2) {};
+
+
+
+
+
 
 	double getA() const { return A; }
 	double getB() const { return B; } //геттеры
@@ -59,6 +67,7 @@ public:
 	VectorNormali(double A_, double B_, double C_) : A(A_), B(B_), C(C_){} //инициал
 
 	double operator*(const Plane& pl) {};//скаляр
+	double operator*(const VectorNormali& vec) {};
 	VectorNormali operator^(const VectorNormali& pl) {};//векторн
 
 	double getA() const { return A; }
@@ -78,5 +87,19 @@ public:
 	Line() : point(), vector() {}
 	Line(const Point& p, const VectorNormali& v): point(p), vector(v) {}
 	~Line() {}
+
+
+    
+
+
+	double getX0() const { return point.getX0(); }
+	double getY0() const { return point.getY0(); }
+	double getZ0() const { return point.getZ0(); }
+	double getA() const { return vector.getA(); }
+	double getB() const { return vector.getB(); }
+	double getC() const { return vector.getC(); }
+
+
+	friend std::ostream& operator<<(std::ostream& str, const Line& line);
 };
 
