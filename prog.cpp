@@ -1,4 +1,4 @@
-#include <iostream>
+#include "Plane.h"
 #include <cmath>
 #include <vector>
 bool Plane::isParallel(Plane pl) {
@@ -169,7 +169,7 @@ std::vector<Plane> Plane::BissPlane(const Plane& pl) {
 
 
 
-Point Plane::FindCoordPoint(const Plane& pl1, const Plane& pl2) {
+Line Plane::FindLine3peres1line(const Plane& pl1, const Plane& pl2) {
 	std::vector<std::vector <double>> matr{
 		{A, B, C, D},
 		{pl1.A, pl1.B, pl1.C, pl1.D},
@@ -209,8 +209,13 @@ Point Plane::FindCoordPoint(const Plane& pl1, const Plane& pl2) {
 		}
 		++rang;
 	}
-
-	return Point( (matr[0][3]/matr[0][0]) -((matr[0][1]* matr[1][3])/ (matr[0][0]* matr[1][1])), (matr[1][3]/ matr[1][1]), 0);  //обойти деление на 0((
+	Point point((matr[0][3] / matr[0][0]) - ((matr[0][1] * matr[1][3]) / (matr[0][0] * matr[1][1])), (matr[1][3] / matr[1][1]), 0);
+	VectorNormali vectornorm(A,B,C);
+	VectorNormali vectornormpl1(pl1.A, pl1.B, pl1.C);
+	VectorNormali vectorRes = vectornorm ^ vectornormpl1;
+	Line line(point, vectorRes);
+	return line;
+	//return Point( (matr[0][3]/matr[0][0]) -((matr[0][1]* matr[1][3])/ (matr[0][0]* matr[1][1])), (matr[1][3]/ matr[1][1]), 0);  //обойти деление на 0((
 
 }
 
@@ -227,22 +232,73 @@ Point Plane::searchPoint2Planes(const Plane& pl1) {
 	return Point(Det1/Det ,Det2/Det , 0);
 }
 
-std::vector<Point> Plane::Points2ParallPlane( const Plane& pl1,const Plane& pl2) {
+std::vector<Line> Plane::Points2ParallPlane( Plane pl1, Plane pl2) {
 	Plane hl;
 	Plane pp;
+	double minuser;
 	if (pl1.isParallel(pl2)) {
 		hl = pl1.MiddlPlane(pl2);
+		minuser = pl1.D - pl2.D;
 		pp = *this;
 	}
 	else if ((*this).isParallel(pl2)) {
 		hl = (*this).MiddlPlane(pl2);
+		minuser = D - pl2.D;
 		pp = pl1;
 	}
 	else {
 		hl = (*this).MiddlPlane(pl1);
+		minuser = D - pl1.D;
 		pp = pl2;
 	}
 	
+	double c1 = (minuser* std::sqrt(pp.A*pp.A + pp.B*pp.B + pp.C*pp.C))/(2*std::sqrt(hl.A * hl.A + hl.B * hl.B + hl.C * hl.C));
+	double c2 = (-minuser * std::sqrt(pp.A * pp.A + pp.B * pp.B + pp.C * pp.C)) / (2 * std::sqrt(hl.A * hl.A + hl.B * hl.B + hl.C * hl.C));
+
+	Plane pp1, pp2;
+	pp1 = pp;
+	pp2 = pp;
+	pp1.D -= c1;
+	pp2.D -= c2;
+
+	Point point1 = pp1.searchPoint2Planes(hl);
+	Point point2 = pp2.searchPoint2Planes(hl);
+
+	std::vector<Line> result;
+	VectorNormali vectornorm_pp(pp.A, pp.B, pp.C);
+	VectorNormali vectornorm_hl(hl.A, hl.B, hl.C);
+	VectorNormali vectornorm = vectornorm_pp ^ vectornorm_hl;
+	Line line1(point1, vectornorm);
+	Line line2(point2, vectornorm);
+	result.push_back(line1);
+	result.push_back(line2);
+
+	
+	return result;
+}
 
 
+Line Plane::FindLine2same(Plane pl1, Plane pl2) {
+	Plane hl;
+	Plane pp;
+	if (pl1.isSame(pl2)) {
+		hl = pl1;
+		pp = *this;
+	}
+	else if ((*this).isSame(pl2)) {
+		hl = *this;
+		pp = pl1;
+	}
+	else {
+		hl = *this;
+		pp = pl2;
+	}
+	VectorNormali vectornorm_pp(pp.A, pp.B, pp.C);
+	VectorNormali vectornorm_hl(hl.A, hl.B, hl.C);
+	VectorNormali vectornorm = vectornorm_pp ^ vectornorm_hl;
+
+	Point point = pp.searchPoint2Planes(hl);
+	Line line(point, vectornorm);
+
+	return line;
 }
