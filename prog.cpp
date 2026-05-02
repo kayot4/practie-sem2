@@ -1,6 +1,7 @@
 #include "Plane.h"
 #include <cmath>
 #include <vector>
+#include <iostream>
 bool Plane::isParallel(Plane pl) {
 	if (A * pl.B == B * pl.A && A * pl.C == C * pl.A && B * pl.D != D * pl.B) {
 		return true;
@@ -18,10 +19,53 @@ bool Plane::isSame(Plane pl) {
 		return false;
 	}
 }
+bool Plane::only2Parallel(Plane pl1,  Plane pl2) {
+	bool this_pl1 = (*this).isParallel(pl1);
+	bool this_pl2 = (*this).isParallel(pl2);
+	bool pl1_pl2 = pl1.isParallel(pl2);
+	return (this_pl1 && !this_pl2 && !pl1_pl2) || (this_pl2 && !this_pl1 && !pl1_pl2) || (pl1_pl2 && !this_pl1 && !this_pl2);
+}
+bool Plane::isPerpendicular(Plane pl1) {
+	VectorNormali vector1(A, B, C);
+	VectorNormali vector2(pl1.A, pl1.B, pl1.C);
+	double eps = 2.2e-16;
+	if (std::fabs(vector1*vector2) < eps) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
+bool Plane::BissPlanesPerpParal(Plane pl1, Plane pl2) {
+	std::vector<Plane> bissectorsThisPl1 = (*this).BissPlane(pl1);
+	if (bissectorsThisPl1[0].isParallel(pl2) && bissectorsThisPl1[1].isPerpendicular(pl2) || bissectorsThisPl1[0].isPerpendicular(pl2) && bissectorsThisPl1[1].isParallel(pl2)) {
+		return true;
+	}
+
+	std::vector<Plane> bissectorsThisPl2 = (*this).BissPlane(pl2);
+	if (bissectorsThisPl2[0].isParallel(pl1) && bissectorsThisPl2[1].isPerpendicular(pl1) || bissectorsThisPl2[0].isPerpendicular(pl1) && bissectorsThisPl2[1].isParallel(pl1)) {
+		return true;
+	}
+
+	std::vector<Plane> bissectorsPl2Pl1 = (pl2).BissPlane(pl1);
+	if (bissectorsPl2Pl1[0].isParallel(*this) && bissectorsPl2Pl1[1].isPerpendicular(*this) || bissectorsPl2Pl1[0].isPerpendicular(*this) && bissectorsPl2Pl1[1].isParallel(*this)) {
+		return true;
+	}
+	return false;
+}
+
+
 
 double VectorNormali::operator*(const Plane& pl) {
 	double scal;
 	scal = A * pl.getA() + B * pl.getB() + C * pl.getC();
+	return scal;
+}
+double VectorNormali::operator*(const VectorNormali& vec) {
+	double scal;
+	scal = A * vec.getA() + B *vec.getB() + C * vec.getC();
 	return scal;
 }
 VectorNormali VectorNormali::operator^(const VectorNormali& vn) {
@@ -301,4 +345,11 @@ Line Plane::FindLine2same(Plane pl1, Plane pl2) {
 	Line line(point, vectornorm);
 
 	return line;
+}
+
+
+std::ostream& operator<<(std::ostream& str, const Line& line) {
+	str << line.getX0() << " " << line.getY0() << " " << line.getX0() << std::endl;
+	str << line.getA() << " " << line.getB() << " " << line.getC() << std::endl;
+	return str;
 }
