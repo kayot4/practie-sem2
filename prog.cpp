@@ -38,6 +38,46 @@ bool Plane::isPerpendicular(Plane pl1) {
 
 }
 
+
+bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {
+	if (pl1.isSame(pl2) && (*this).isParallel(pl1)) {
+		return true;
+	}
+	if ((*this).isSame(pl2) && (pl1).isParallel(*this)) {
+		return true;
+	}
+	if ((*this).isSame(pl1) &&  (pl2).isParallel(*this)) {
+		return true;
+	}
+	return false;
+}
+
+bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) {
+	if (pl1.isSame(pl2) && (*this).isPerpendicular(pl1)) {
+		return true;
+	}
+	if ((*this).isSame(pl2) && (pl1).isPerpendicular(pl2)) {
+		return true;
+	}
+	if (pl1.isSame(*this) && (*this).isPerpendicular(pl2)) {
+		return true;
+	}
+	return false;
+}
+
+bool Plane::Same2Peresec1(Plane pl1, Plane pl2) {
+	if (pl1.isSame(pl2) && !(*this).isPerpendicular(pl1)) {
+		return true;
+	}
+	if ((*this).isSame(pl2) && !(pl1).isPerpendicular(pl2)) {
+		return true;
+	}
+	if (pl1.isSame(*this) && !(*this).isPerpendicular(pl2)) {
+		return true;
+	}
+	return false;
+}
+
 bool Plane::BissPlanesPerpParal(Plane pl1, Plane pl2) {
 	std::vector<Plane> bissectorsThisPl1 = (*this).BissPlane(pl1);
 	if (bissectorsThisPl1[0].isParallel(pl2) && bissectorsThisPl1[1].isPerpendicular(pl2) || bissectorsThisPl1[0].isPerpendicular(pl2) && bissectorsThisPl1[1].isParallel(pl2)) {
