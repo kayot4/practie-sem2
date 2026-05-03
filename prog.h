@@ -17,6 +17,9 @@ public:
 	bool only2Parallel( Plane pl1, Plane pl2) {};
 	bool isPerpendicular(Plane pl1) {};
 	bool BissPlanesPerpParal(Plane pl1, Plane pl2) {};
+	bool Same2Parallel1(Plane pl1, Plane pl2) {};
+	bool Same2Peresec1Perp(Plane pl1, Plane pl2) {};
+	bool Same2Peresec1(Plane pl1, Plane pl2) {};
 
 	double Distance(const Point& p) {};
 	int RangRash(const Plane& pl1, const Plane& pl2) {};
@@ -29,7 +32,7 @@ public:
 	std::vector<Line> Points2ParallPlane(Plane pl1,Plane pl2) {};
 	Line FindLine2same(Plane pl1, Plane pl2) {};
 
-
+	
 
 
 
