@@ -61,3 +61,27 @@ int main()
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+if(rangCas ==1 ){
+ 				if(rangRash == 1{
+		
+	 			}
+				else{
+						if
+
+
+else if(rangCas == 2){
+	
+}
+else{
+
+}
