@@ -2,6 +2,8 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+
+
 bool Plane::isParallel(Plane pl) {
 	if (A * pl.B == B * pl.A && A * pl.C == C * pl.A && B * pl.D != D * pl.B) {
 		return true;
@@ -11,6 +13,8 @@ bool Plane::isParallel(Plane pl) {
 	}
 }
 
+
+
 bool Plane::isSame(Plane pl) {
 	if (A * pl.B == B * pl.A && C * pl.D == D * pl.C && C * pl.B == B * pl.C) {
 		return true;
@@ -19,17 +23,25 @@ bool Plane::isSame(Plane pl) {
 		return false;
 	}
 }
+
+
+
+
 bool Plane::only2Parallel(Plane pl1,  Plane pl2) {
-	bool this_pl1 = (*this).isParallel(pl1);
+	bool this_pl1 = (*this).isParallel(pl1);   
 	bool this_pl2 = (*this).isParallel(pl2);
 	bool pl1_pl2 = pl1.isParallel(pl2);
-	return (this_pl1 && !this_pl2 && !pl1_pl2) || (this_pl2 && !this_pl1 && !pl1_pl2) || (pl1_pl2 && !this_pl1 && !this_pl2);
+	return (this_pl1 && !this_pl2 && !pl1_pl2) || (this_pl2 && !this_pl1 && !pl1_pl2) || (pl1_pl2 && !this_pl1 && !this_pl2);  //2 параллельны   все случаи перебираем 
 }
+
+
+
+
 bool Plane::isPerpendicular(Plane pl1) {
 	VectorNormali vector1(A, B, C);
 	VectorNormali vector2(pl1.A, pl1.B, pl1.C);
 	double eps = 2.2e-16;
-	if (std::fabs(vector1*vector2) < eps) {
+	if (std::fabs(vector1*vector2) < eps) { //перпендикулярны
 		return true;
 	}
 	else {
@@ -39,7 +51,10 @@ bool Plane::isPerpendicular(Plane pl1) {
 }
 
 
-bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {
+
+
+
+bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {   //2 совпадают 1 параллельна
 	if (pl1.isSame(pl2) && (*this).isParallel(pl1)) {
 		return true;
 	}
@@ -52,7 +67,10 @@ bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {
 	return false;
 }
 
-bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) {
+
+
+
+bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) { //2 совпадают и 1 пересекает перпендикеулярно
 	if (pl1.isSame(pl2) && (*this).isPerpendicular(pl1)) {
 		return true;
 	}
@@ -64,6 +82,10 @@ bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) {
 	}
 	return false;
 }
+
+
+
+
 
 bool Plane::Same2Peresec1(Plane pl1, Plane pl2) {
 	if (pl1.isSame(pl2) && !(*this).isPerpendicular(pl1)) {
@@ -77,6 +99,8 @@ bool Plane::Same2Peresec1(Plane pl1, Plane pl2) {
 	}
 	return false;
 }
+
+
 
 bool Plane::BissPlanesPerpParal(Plane pl1, Plane pl2) {
 	std::vector<Plane> bissectorsThisPl1 = (*this).BissPlane(pl1);
@@ -237,18 +261,18 @@ Plane Plane::MiddlPlane(const Plane& pl) {
 
 
 
-std::vector<Plane> Plane::BissPlane(const Plane& pl) {
-	std::vector<Plane> bissPlane;
+std::vector<Plane> Plane::BissPlane(const Plane& pl) {     
+	std::vector<Plane> bissPlanes;  
 	Plane our_norm = *this;
 	Plane pl_norm = pl;
 
 	our_norm.normalize();
 	pl_norm.normalize();
 
-	bissPlane.push_back(Plane(our_norm.A + pl_norm.A, our_norm.B + pl_norm.B, our_norm.C + pl_norm.C, our_norm.D + pl_norm.D));
-	bissPlane.push_back(Plane(our_norm.A - pl_norm.A, our_norm.B - pl_norm.B, our_norm.C - pl_norm.C, our_norm.D - pl_norm.D));
+	bissPlanes.push_back(Plane(our_norm.A + pl_norm.A, our_norm.B + pl_norm.B, our_norm.C + pl_norm.C, our_norm.D + pl_norm.D));
+	bissPlanes.push_back(Plane(our_norm.A - pl_norm.A, our_norm.B - pl_norm.B, our_norm.C - pl_norm.C, our_norm.D - pl_norm.D));
 
-	return bissPlane;
+	return bissPlanes;
 }
 
 
