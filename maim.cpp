@@ -1,7 +1,12 @@
+#pragma once
 #include <iostream>
 #include <vector>
-#include "Plane.cpp"
 #include "Plane.h"
+#include "Line.h"
+#include "VectorNormali.h"
+#include "Point.h"
+
+
 
 int main()
 {
