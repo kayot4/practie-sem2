@@ -23,7 +23,7 @@ int main()
 		}
 		else {
 			std::cout << "0 lines" << std::endl; // 3параллельны
-		} 
+		}
 	}
 	if (rangRash == 3 && rangCas == 2) {
 		if (plane[0].only2Parallel(plane[1], plane[2])) {
@@ -33,14 +33,19 @@ int main()
 			std::cout << lines[1] << std::endl;
 		}
 		else { //3 плоскости не имеют общую точку
-
+			std::vector<Line> lines = plane[0].Find4Lines(plane[1], plane[2]);
+			std::cout << "4" << std::endl;
+			std::cout << lines[0] << std::endl;
+			std::cout << lines[1] << std::endl;
+			std::cout << lines[2] << std::endl;
+			std::cout << lines[3] << std::endl;
 		}
 	}
-	if ( rangRash == 2 && rangCas == 2 ) {
+	if (rangRash == 2 && rangCas == 2) {
 		if (plane[0].Same2Peresec1Perp(plane[1], plane[2])) {
 			std::cout << "Infinite number of lines" << std::endl;//2 совпадают 1 пересекает 
 		}
-		else if(plane[0].Same2Peresec1(plane[1], plane[2])) {
+		else if (plane[0].Same2Peresec1(plane[1], plane[2])) {
 			Line line = plane[0].FindLine2same(plane[1], plane[2]);
 			std::cout << " 1 " << std::endl;
 			std::cout << line << std::endl;
@@ -53,35 +58,16 @@ int main()
 			Line line = plane[0].FindLine3peres1line(plane[1], plane[2]); //3 по одной прямой, но биссекторная не прпендикулряна и не праалеллльвдаджважэыдв
 			std::cout << line;
 		}
-		
+
 	}
 	if (rangRash == 3 && rangCas == 3) {
-		//3  плоскости имеют одну общую точку
+		std::vector<Line> lines = plane[0].Find4Lines(plane[1], plane[2]);
+		std::cout << "4" << std::endl;
+		std::cout << lines[0] << std::endl;
+		std::cout << lines[1] << std::endl;
+		std::cout << lines[2] << std::endl;
+		std::cout << lines[3] << std::endl;
 	}
-	
-	
-}
 
-
-
-
-
-
-
-
-
-
-if(rangCas ==1 ){
- 				if(rangRash == 1{
-		
-	 			}
-				else{
-						if
-
-
-else if(rangCas == 2){
-	
-}
-else{
 
 }
