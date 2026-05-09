@@ -6,7 +6,7 @@
 #include "VectorNormali.h"
 #include "Line.h"
 #include "Point.h"
-
+// 11 22 34 47 156 198 240 251 140 267 412
 
 bool Plane::isParallel(const Plane& pl) {
 	if (A * pl.B == B * pl.A && A * pl.C == C * pl.A && B * pl.D != D * pl.B) {
