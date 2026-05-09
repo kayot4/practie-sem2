@@ -1,7 +1,11 @@
-#include "Plane.h"
+#pragma once
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include "Plane.h"
+#include "VectorNormali.h"
+#include "Line.h"
+#include "Point.h"
 
 
 bool Plane::isParallel(const Plane& pl) {
@@ -132,29 +136,6 @@ bool Plane::BissPlanesPerpParal(const Plane& p1, const Plane& p2) {
 }
 
 
-
-double VectorNormali::operator*(const VectorNormali& vec) {
-	double scal;
-	scal = A * vec.getA() + B * vec.getB() + C * vec.getC();
-	return scal;
-}
-VectorNormali VectorNormali::operator^(const VectorNormali& vn) {
-	VectorNormali hl;
-	double eps = 2.2e-16;
-	hl.A = B * vn.C - C * vn.B;
-	hl.B = -(A * vn.C - C * vn.A);
-	hl.C = A * vn.B - B * vn.A;
-	if (std::fabs(hl.A) < eps) {
-		hl.A = 0;
-	}
-	if (std::fabs(hl.B) < eps) {
-		hl.B = 0;
-	}
-	if (std::fabs(hl.C) < eps) {
-		hl.C = 0;
-	}
-	return hl;
-}
 
 void Plane::normalize() {
 	double norm = std::sqrt(A * A + B * B + C * C);
@@ -425,11 +406,7 @@ Line Plane::FindLine2same(const Plane& p1, const Plane& p2) {
 }
 
 
-std::ostream& operator<<(std::ostream& str, const Line& line) {
-	str << line.getX0() << " " << line.getY0() << " " << line.getX0() << std::endl;
-	str << line.getA() << " " << line.getB() << " " << line.getC() << std::endl;
-	return str;
-}
+
 
 
 std::vector<Line> Plane::Find4Lines(const Plane& p1, const Plane& p2) {
