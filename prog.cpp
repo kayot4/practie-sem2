@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-bool Plane::isParallel(Plane pl) {
+bool Plane::isParallel(const Plane& pl) {
 	if (A * pl.B == B * pl.A && A * pl.C == C * pl.A && B * pl.D != D * pl.B) {
 		return true;
 	}
@@ -15,7 +15,7 @@ bool Plane::isParallel(Plane pl) {
 
 
 
-bool Plane::isSame(Plane pl) {
+bool Plane::isSame(const Plane& pl) {
 	if (A * pl.B == B * pl.A && C * pl.D == D * pl.C && C * pl.B == B * pl.C) {
 		return true;
 	}
@@ -27,8 +27,10 @@ bool Plane::isSame(Plane pl) {
 
 
 
-bool Plane::only2Parallel(Plane pl1,  Plane pl2) {
-	bool this_pl1 = (*this).isParallel(pl1);   
+bool Plane::only2Parallel(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
+	bool this_pl1 = (*this).isParallel(pl1);
 	bool this_pl2 = (*this).isParallel(pl2);
 	bool pl1_pl2 = pl1.isParallel(pl2);
 	return (this_pl1 && !this_pl2 && !pl1_pl2) || (this_pl2 && !this_pl1 && !pl1_pl2) || (pl1_pl2 && !this_pl1 && !this_pl2);  //2 параллельны   все случаи перебираем 
@@ -37,11 +39,12 @@ bool Plane::only2Parallel(Plane pl1,  Plane pl2) {
 
 
 
-bool Plane::isPerpendicular(Plane pl1) {
+
+bool Plane::isPerpendicular(const Plane& pl1) {
 	VectorNormali vector1(A, B, C);
 	VectorNormali vector2(pl1.A, pl1.B, pl1.C);
 	double eps = 2.2e-16;
-	if (std::fabs(vector1*vector2) < eps) { //перпендикулярны
+	if (std::fabs(vector1 * vector2) < eps) { //перпендикулярны
 		return true;
 	}
 	else {
@@ -54,14 +57,16 @@ bool Plane::isPerpendicular(Plane pl1) {
 
 
 
-bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {   //2 совпадают 1 параллельна
+bool Plane::Same2Parallel1(const Plane& p1, const Plane& p2) {   //2 совпадают 1 параллельна
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	if (pl1.isSame(pl2) && (*this).isParallel(pl1)) {
 		return true;
 	}
 	if ((*this).isSame(pl2) && (pl1).isParallel(*this)) {
 		return true;
 	}
-	if ((*this).isSame(pl1) &&  (pl2).isParallel(*this)) {
+	if ((*this).isSame(pl1) && (pl2).isParallel(*this)) {
 		return true;
 	}
 	return false;
@@ -70,7 +75,9 @@ bool Plane::Same2Parallel1(Plane pl1, Plane pl2) {   //2 совпадают 1 п
 
 
 
-bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) { //2 совпадают и 1 пересекает перпендикеулярно
+bool Plane::Same2Peresec1Perp(const Plane& p1, const Plane& p2) { //2 совпадают и 1 пересекает перпендикеулярно
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	if (pl1.isSame(pl2) && (*this).isPerpendicular(pl1)) {
 		return true;
 	}
@@ -87,7 +94,9 @@ bool Plane::Same2Peresec1Perp(Plane pl1, Plane pl2) { //2 совпадают и 
 
 
 
-bool Plane::Same2Peresec1(Plane pl1, Plane pl2) {
+bool Plane::Same2Peresec1(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	if (pl1.isSame(pl2) && !(*this).isPerpendicular(pl1)) {
 		return true;
 	}
@@ -102,7 +111,9 @@ bool Plane::Same2Peresec1(Plane pl1, Plane pl2) {
 
 
 
-bool Plane::BissPlanesPerpParal(Plane pl1, Plane pl2) {
+bool Plane::BissPlanesPerpParal(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	std::vector<Plane> bissectorsThisPl1 = (*this).BissPlane(pl1);
 	if (bissectorsThisPl1[0].isParallel(pl2) && bissectorsThisPl1[1].isPerpendicular(pl2) || bissectorsThisPl1[0].isPerpendicular(pl2) && bissectorsThisPl1[1].isParallel(pl2)) {
 		return true;
@@ -122,14 +133,9 @@ bool Plane::BissPlanesPerpParal(Plane pl1, Plane pl2) {
 
 
 
-double VectorNormali::operator*(const Plane& pl) {
-	double scal;
-	scal = A * pl.getA() + B * pl.getB() + C * pl.getC();
-	return scal;
-}
 double VectorNormali::operator*(const VectorNormali& vec) {
 	double scal;
-	scal = A * vec.getA() + B *vec.getB() + C * vec.getC();
+	scal = A * vec.getA() + B * vec.getB() + C * vec.getC();
 	return scal;
 }
 VectorNormali VectorNormali::operator^(const VectorNormali& vn) {
@@ -177,13 +183,13 @@ int Plane::RangRash(const Plane& pl1, const Plane& pl2) {
 	int rang = 0;
 	double eps = 2.2e-16;
 
-	for (int col = 0; col < cols && rang<rows; ++col) { //идем по столбцам
+	for (int col = 0; col < cols && rang < rows; ++col) { //идем по столбцам
 
 		int RowMax = rang;
 		double maxval = std::fabs(matr[rang][col]); //максимальный за диагональный берется
 
 		for (int i = rang + 1; i < rows; ++i) {
-			if (std::fabs(matr[i][col]) > maxval){
+			if (std::fabs(matr[i][col]) > maxval) {
 				maxval = std::fabs(matr[i][col]);  //наибольший по модулю элемент в столбце
 				RowMax = i;
 			}
@@ -255,14 +261,14 @@ Plane Plane::MiddlPlane(const Plane& pl) {
 	middlPlane.A = A;
 	middlPlane.B = B;
 	middlPlane.C = C;
-	middlPlane.D = (D+pl.D)/2;
+	middlPlane.D = (D + pl.D) / 2;
 	return middlPlane;
 }
 
 
 
-std::vector<Plane> Plane::BissPlane(const Plane& pl) {     
-	std::vector<Plane> bissPlanes;  
+std::vector<Plane> Plane::BissPlane(const Plane& pl) {
+	std::vector<Plane> bissPlanes;
 	Plane our_norm = *this;
 	Plane pl_norm = pl;
 
@@ -317,8 +323,11 @@ Line Plane::FindLine3peres1line(const Plane& pl1, const Plane& pl2) {
 		}
 		++rang;
 	}
-	Point point((matr[0][3] / matr[0][0]) - ((matr[0][1] * matr[1][3]) / (matr[0][0] * matr[1][1])), (matr[1][3] / matr[1][1]), 0);
-	VectorNormali vectornorm(A,B,C);
+	double z0 = matr[2][3] / matr[2][2];
+	double y0 = (matr[1][3]/ matr[1][1]) - (matr[1][2]/matr[1][1])*z0;
+	double x0 = (matr[0][3] / matr[0][0]) - ((matr[0][1]/matr[0][0]) * (matr[1][3] / matr[1][1])) + ((matr[0][1] / matr[0][0]) * (matr[1][2] / matr[1][1]) * z0) - (z0 * (matr[0][2]/matr[0][0]));
+	Point point(x0, y0, z0);
+	VectorNormali vectornorm(A, B, C);
 	VectorNormali vectornormpl1(pl1.A, pl1.B, pl1.C);
 	VectorNormali vectorRes = vectornorm ^ vectornormpl1;
 	Line line(point, vectorRes);
@@ -332,15 +341,17 @@ double determinat2x2(double a, double b, double c, double d) {
 }
 
 Point Plane::searchPoint2Planes(const Plane& pl1) {
-	
+
 	double Det = determinat2x2(A, B, pl1.A, pl1.B);
 	double Det1 = determinat2x2(D, B, pl1.D, pl1.B);
 	double Det2 = determinat2x2(A, D, pl1.A, pl1.D);
 
-	return Point(Det1/Det ,Det2/Det , 0);
+	return Point(Det1 / Det, Det2 / Det, 0);
 }
 
-std::vector<Line> Plane::Points2ParallPlane( Plane pl1, Plane pl2) {
+std::vector<Line> Plane::Points2ParallPlane(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	Plane hl;
 	Plane pp;
 	double minuser;
@@ -359,8 +370,8 @@ std::vector<Line> Plane::Points2ParallPlane( Plane pl1, Plane pl2) {
 		minuser = D - pl1.D;
 		pp = pl2;
 	}
-	
-	double c1 = (minuser* std::sqrt(pp.A*pp.A + pp.B*pp.B + pp.C*pp.C))/(2*std::sqrt(hl.A * hl.A + hl.B * hl.B + hl.C * hl.C));
+
+	double c1 = (minuser * std::sqrt(pp.A * pp.A + pp.B * pp.B + pp.C * pp.C)) / (2 * std::sqrt(hl.A * hl.A + hl.B * hl.B + hl.C * hl.C));
 	double c2 = (-minuser * std::sqrt(pp.A * pp.A + pp.B * pp.B + pp.C * pp.C)) / (2 * std::sqrt(hl.A * hl.A + hl.B * hl.B + hl.C * hl.C));
 
 	Plane pp1, pp2;
@@ -381,12 +392,14 @@ std::vector<Line> Plane::Points2ParallPlane( Plane pl1, Plane pl2) {
 	result.push_back(line1);
 	result.push_back(line2);
 
-	
+
 	return result;
 }
 
 
-Line Plane::FindLine2same(Plane pl1, Plane pl2) {
+Line Plane::FindLine2same(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
 	Plane hl;
 	Plane pp;
 	if (pl1.isSame(pl2)) {
@@ -416,4 +429,51 @@ std::ostream& operator<<(std::ostream& str, const Line& line) {
 	str << line.getX0() << " " << line.getY0() << " " << line.getX0() << std::endl;
 	str << line.getA() << " " << line.getB() << " " << line.getC() << std::endl;
 	return str;
+}
+
+
+std::vector<Line> Plane::Find4Lines(const Plane& p1, const Plane& p2) {
+	Plane pl1 = p1;
+	Plane pl2 = p2;
+	double eps = 2.2e-16;
+	//std::vector<Plane> bissPlanes;
+	std::vector<Plane> bis1 = (*this).BissPlane(pl1);
+	std::vector<Plane> bis2 = (*this).BissPlane(pl2);
+	std::vector<Plane> bis3 = (pl2).BissPlane(pl1);
+
+	/*bissPlanes.push_back(bis1[0]);
+	bissPlanes.push_back(bis1[1]);
+	bissPlanes.push_back(bis2[0]);
+	bissPlanes.push_back(bis2[1]);
+	bissPlanes.push_back(bis3[0]);
+	bissPlanes.push_back(bis3[1]);*/
+	
+	std::vector<Line> allLines;
+
+	for (int i = 0; i < 2; ++i) {
+		for (int j = 0; j < 2; ++j) {
+			for (int k = 0; k < 2; ++k) {
+				Line line = bis1[i].FindLine3peres1line(bis2[j], bis3[k]);
+				allLines.push_back(line);
+			}
+		}
+	}
+
+	std::vector<Line> resLines;
+
+	for (int i = 0; i < 8; ++i) {
+		Line line = allLines[i];
+		Point point(line.getX0(), line.getY0(), line.getZ0());
+
+		double dist1 = (*this).Distance(point);
+		double dist2 = pl1.Distance(point);
+		double dist3 = pl2.Distance(point);
+
+		if (std::fabs(dist1 - dist3) < eps && std::fabs(dist1 - dist2) < eps && std::fabs(dist2 - dist3) < eps) {
+			resLines.push_back(line);
+
+		}
+	}
+
+	return resLines;
 }
