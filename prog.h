@@ -12,14 +12,16 @@ public:
 	Plane() : A(0), B(0), C(0), D(0) {} //по умолчан
 	Plane(double A_, double B_, double C_, double D_) : A(A_), B(B_), C(C_), D(D_) {} //инициал
 
-	bool isSame(Plane pl) {};//совп
-	bool isParallel(Plane pl) {}; // паралелл
-	bool only2Parallel( Plane pl1, Plane pl2) {};
-	bool isPerpendicular(Plane pl1) {};
-	bool BissPlanesPerpParal(Plane pl1, Plane pl2) {};
-	bool Same2Parallel1(Plane pl1, Plane pl2) {};
-	bool Same2Peresec1Perp(Plane pl1, Plane pl2) {};
-	bool Same2Peresec1(Plane pl1, Plane pl2) {};
+	bool isSame(const Plane& pl) {};//совп
+	bool isParallel(const Plane& pl) {}; // паралелл
+	bool only2Parallel(const Plane& p1, const Plane& p2) {};
+	bool isPerpendicular(const Plane& pl1) {};
+	bool BissPlanesPerpParal(const Plane& p1, const Plane& p2) {};
+
+
+	bool Same2Parallel1(const Plane& p1,const Plane& p2) {};
+	bool Same2Peresec1Perp(const Plane& p1, const Plane& p2) {};
+	bool Same2Peresec1(const Plane& p1, const Plane& p2) {};
 
 	double Distance(const Point& p) {};
 	int RangRash(const Plane& pl1, const Plane& pl2) {};
@@ -29,10 +31,11 @@ public:
 	std::vector<Plane> BissPlane(const Plane& pl) {};
 	Line FindLine3peres1line(const Plane& pl1, const Plane& pl2) {};
 	Point searchPoint2Planes(const Plane& pl1) {};
-	std::vector<Line> Points2ParallPlane(Plane pl1,Plane pl2) {};
-	Line FindLine2same(Plane pl1, Plane pl2) {};
 
-	
+	std::vector<Line> Points2ParallPlane(const Plane& p1, const Plane& p2) {};
+	Line FindLine2same(const Plane& p1, const Plane& p2) {};
+
+	std::vector<Line> Find4Lines(const Plane& p1, const Plane& p2) {};
 
 
 
@@ -67,7 +70,7 @@ private:
 	double C;
 public:
 	VectorNormali() : A(0), B(0), C(0) {} //по умолчан
-	VectorNormali(double A_, double B_, double C_) : A(A_), B(B_), C(C_){} //инициал
+	VectorNormali(double A_, double B_, double C_) : A(A_), B(B_), C(C_) {} //инициал
 
 	double operator*(const VectorNormali& vec) {};
 	VectorNormali operator^(const VectorNormali& pl) {};//векторн
@@ -82,16 +85,16 @@ public:
 
 
 class Line {
-private: 
+private:
 	Point point;
 	VectorNormali vector;
 public:
 	Line() : point(), vector() {}
-	Line(const Point& p, const VectorNormali& v): point(p), vector(v) {}
+	Line(const Point& p, const VectorNormali& v) : point(p), vector(v) {}
 	~Line() {}
 
 
-    
+
 
 
 	double getX0() const { return point.getX0(); }
