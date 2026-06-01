@@ -177,6 +177,137 @@ Point solveSYS1(std::vector<std::vector<double>>& matr) {
 
 
 
+
+
+
+
+
+
+
+
+
+Point solveSYS1(const std::vector<std::vector<double>>& matr, double eps = 2.2e-16) {
+	// Проверка корректности входных данных: должно быть 3 уравнения с 4 коэффициентами (A, B, C, D)
+	if (matr.size() < 3) {
+		throw std::runtime_error("Недостаточно уравнений в системе — требуется 3 плоскости");
+	}
+	for (int i = 0; i < 3; ++i) {
+		if (matr[i].size() < 4) {
+			throw std::runtime_error("Некорректное уравнение плоскости — недостаточно коэффициентов");
+		}
+	}
+
+	// Шаг 1. Проверяем вырожденность системы: ищем хотя бы одно уравнение с ненулевым коэффициентом
+	bool hasNonZeroCoeff = false;
+	for (int i = 0; i < 3 && !hasNonZeroCoeff; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			if (std::fabs(matr[i][j]) > eps) {
+				hasNonZeroCoeff = true;
+				break;
+			}
+		}
+	}
+	if (!hasNonZeroCoeff) {
+		throw std::runtime_error("Система вырождена: все коэффициенты при переменных равны нулю");
+	}
+
+	// Шаг 2. Попытка 1: фиксируем z = 0 и решаем систему для x и y из первых двух уравнений
+	{
+		double a1 = matr[0][0], b1 = matr[0][1], d1 = matr[0][3];
+		double a2 = matr[1][0], b2 = matr[1][1], d2 = matr[1][3];
+
+		double det = a1 * b2 - b1 * a2;
+		if (std::fabs(det) > eps) { // определитель ненулевой — система имеет решение
+			double x = (b1 * d2 - b2 * d1) / det;
+			double y = (a2 * d1 - a1 * d2) / det;
+			std::cout << "P0 (z=0): " << x << " " << y << " " << 0.0 << std::endl;
+			return Point(x, y, 0.0);
+		}
+	}
+
+	// Шаг 3. Попытка 2: фиксируем y = 0 и решаем для x и z
+	{
+		double a1 = matr[0][0], c1 = matr[0][2], d1 = matr[0][3];
+		double a2 = matr[1][0], c2 = matr[1][2], d2 = matr[1][3];
+
+		double det = a1 * c2 - c1 * a2;
+		if (std::fabs(det) > eps) {
+			double x = (c1 * d2 - c2 * d1) / det;
+			double z = (a2 * d1 - a1 * d2) / det;
+			std::cout << "P0 (y=0): " << x << " " << 0.0 << " " << z << std::endl;
+			return Point(x, 0.0, z);
+		}
+	}
+
+	// Шаг 4. Попытка 3: фиксируем x = 0 и решаем для y и z
+	{
+		double b1 = matr[0][1], c1 = matr[0][2], d1 = matr[0][3];
+		double b2 = matr[1][1], c2 = matr[1][2], d2 = matr[1][3];
+
+		double det = b1 * c2 - c1 * b2;
+		if (std::fabs(det) > eps) {
+			double y = (c1 * d2 - c2 * d1) / det;
+			double z = (b2 * d1 - b1 * d2) / det;
+			std::cout << "P0 (x=0): " << 0.0 << " " << y << " " << z << std::endl;
+			return Point(0.0, y, z);
+		}
+	}
+
+	// Шаг 5. Резервный вариант: ищем уравнение с одним ненулевым коэффициентом (диагональная система)
+	std::vector<double> point(3, 0.0);
+	bool foundVars[3] = { false, false, false };
+
+	for (int i = 0; i < 3; ++i) {
+		int nonZeroCount = 0;
+		int varIndex = -1;
+
+		for (int j = 0; j < 3; ++j) {
+			if (std::fabs(matr[i][j]) > eps) {
+				nonZeroCount++;
+				varIndex = j;
+			}
+		}
+
+		if (nonZeroCount == 1 && varIndex != -1) {
+			point[varIndex] = -matr[i][3] / matr[i][varIndex];
+			foundVars[varIndex] = true;
+		}
+	}
+
+	if (foundVars[0] && foundVars[1] && foundVars[2]) {
+		std::cout << "P0 (диагональная): " << point[0] << " " << point[1] << " " << point[2] << std::endl;
+		return Point(point[0], point[1], point[2]);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main()
 {
     std::vector<Plane> planes(3); // вектор исходных плоскостей
